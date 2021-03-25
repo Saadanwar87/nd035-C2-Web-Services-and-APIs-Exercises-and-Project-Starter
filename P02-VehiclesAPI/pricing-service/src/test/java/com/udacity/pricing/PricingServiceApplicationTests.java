@@ -12,6 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,13 +37,17 @@ public class PricingServiceApplicationTests {
 	@Test
 	public void getPrices(){
 		ResponseEntity<Price> response = this.testRestTemplate.getForEntity("http://localhost:"+port+"/prices/", Price.class);
-		assert(response.getStatusCode().equals(HttpStatus.OK));
+		assertThat(response.getStatusCode().equals(HttpStatus.OK));
+
 	}
 
 	@Test
 	public void getPriceById(){
 		ResponseEntity<Price> response = this.testRestTemplate.getForEntity("http://localhost:"+port+"/prices/2", Price.class);
-		assert(response.getStatusCode().equals(HttpStatus.OK));
+		HttpStatus statusCode = response.getStatusCode();
+		assertThat(statusCode.value()).isEqualTo(200);
+		assertThat(response.getBody().getCurrency()).isEqualTo("USD");
+		assertThat(response.getBody().getPrice()).isBetween(new BigDecimal("22000.33"), new BigDecimal("27000.33"));
 	}
 
 }

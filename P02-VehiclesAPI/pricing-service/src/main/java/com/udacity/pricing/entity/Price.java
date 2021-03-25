@@ -52,4 +52,5 @@ public class Price {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
 }
